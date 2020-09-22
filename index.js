@@ -3,10 +3,10 @@ const puppeteer = require("puppeteer");
 const BASE_URL = process.env.NETPA_URL;
 const USER = process.env.NETPA_USER;
 const PASS = process.env.NETPA_PASS;
-const UC_ID = process.env.NETPA_UCID;
-const GRADE_INFO_COLUMN_ID = process.env.NETPA_GRADEINFOCOLUMNID || 1071; // Grade status
+const COURSE_ID = process.env.NETPA_COURSEID;
+const COURSE_INFO_COLUMN_ID = process.env.NETPA_COURSEINFOCOLUMNID || 1071; // Course status
 
-if (!BASE_URL || !USER || !PASS || !UC_ID) {
+if (!BASE_URL || !USER || !PASS || !COURSE_ID) {
   console.error("Please provide the correct environment variables");
   return;
 }
@@ -29,19 +29,19 @@ if (!BASE_URL || !USER || !PASS || !UC_ID) {
   // Grades page
   await page.waitForSelector("a[href='page?stage=ConsultaNotasAluno']");
   await page.goto(BASE_URL + "/page?stage=ConsultaNotasAluno");
-  const ucColumnIdentifier = await page.waitForSelector(
-    `td[data-qtip*='${UC_ID}'`
+  const courseColumnIdentifier = await page.waitForSelector(
+    `td[data-qtip*='${COURSE_ID}'`
   );
-  const gradeInfoElement = (
-    await ucColumnIdentifier.$x(
-      `../td[contains(@class, '${GRADE_INFO_COLUMN_ID}')]`
+  const courseInfoElement = (
+    await courseColumnIdentifier.$x(
+      `../td[contains(@class, '${COURSE_INFO_COLUMN_ID}')]`
     )
   )[0];
-  const gradeInfo = await (
-    await gradeInfoElement.getProperty("innerText")
+  const courseInfo = await (
+    await courseInfoElement.getProperty("innerText")
   ).jsonValue();
 
-  console.log(gradeInfo);
+  console.log(courseInfo);
 
   await browser.close();
 })();
