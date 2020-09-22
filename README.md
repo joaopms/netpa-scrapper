@@ -4,6 +4,10 @@ A tool to automatically retrieve information about a course (like the status, gr
 
 _This tool is not affiliated or supported by Digitalis._
 
+## Telegram integration
+
+If you want to receive a Telegram message when the retrieved information changes, check out [the Telegram integration branch](https://github.com/joaopms/netpa-scrapper/tree/telegram).
+
 ## How to run
 
 - Firstly clone the repository
