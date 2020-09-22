@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer");
+const fetch = require("node-fetch");
 
 const BASE_URL = process.env.NETPA_URL;
 const USER = process.env.NETPA_USER;
@@ -6,7 +7,21 @@ const PASS = process.env.NETPA_PASS;
 const COURSE_ID = process.env.NETPA_COURSEID;
 const COURSE_INFO_COLUMN_ID = process.env.NETPA_COURSEINFOCOLUMNID || 1071; // Course status
 
-if (!BASE_URL || !USER || !PASS || !COURSE_ID) {
+const TELEGRAM_TOKEN = process.env.NETPA_TELEGRAM_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.NETPA_TELEGRAM_CHATID;
+const TELEGRAM_DEFAULT_VALUE = process.env.NETPA_TELEGRAM_DEFAULTVALUE;
+const TELEGRAM_MESSAGE = process.env.NETPA_TELEGRAM_MESSAGE;
+
+if (
+  !BASE_URL ||
+  !USER ||
+  !PASS ||
+  !COURSE_ID ||
+  !TELEGRAM_TOKEN ||
+  !TELEGRAM_CHAT_ID ||
+  !TELEGRAM_DEFAULT_VALUE ||
+  !TELEGRAM_MESSAGE
+) {
   console.error("Please provide the correct environment variables");
   return;
 }
@@ -41,7 +56,24 @@ if (!BASE_URL || !USER || !PASS || !COURSE_ID) {
     await courseInfoElement.getProperty("innerText")
   ).jsonValue();
 
-  console.log(courseInfo);
-
   await browser.close();
+
+  console.log(courseInfo);
+  await sendTelegramMessage(courseInfo);
 })();
+
+async function sendTelegramMessage(value) {
+  if (value === TELEGRAM_DEFAULT_VALUE) {
+    return;
+  }
+
+  console.log("Sending Telegram message");
+  await fetch(`https://api.telegram.org/${TELEGRAM_TOKEN}/sendMessage`, {
+    method: "POST",
+    body: JSON.stringify({
+      chat_id: TELEGRAM_CHAT_ID,
+      text: TELEGRAM_MESSAGE,
+    }),
+    headers: { "Content-Type": "application/json" },
+  });
+}
