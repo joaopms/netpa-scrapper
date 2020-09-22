@@ -32,3 +32,7 @@ NETPA_COURSEID=1593994 \
 NETPA_COURSEINFOCOLUMNID=1071 \
 node index.js
 ```
+
+## License
+
+Do What The Fuck You Want To Public License (WTFPL)
